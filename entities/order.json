@@ -1,0 +1,23 @@
+{
+  "customer_name": "Desvin",
+  "phone": "08123456789",
+  "notes": "Tanpa pedas",
+  "total": 50000,
+  "status": "pending",
+  "order_type": "dine_in",
+  "table_number": "A1",
+  "items": [
+    {
+      "name": "Nasi Goreng",
+      "price": 25000,
+      "quantity": 1,
+      "category": "Makanan"
+    },
+    {
+      "name": "Es Teh",
+      "price": 5000,
+      "quantity": 2,
+      "category": "Minuman"
+    }
+  ]
+}
