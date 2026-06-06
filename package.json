@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "base-app",
   "private": true,
@@ -27,3 +28,20 @@
     "vite": "^8.0.16"
   }
 }
+=======
+{
+  "name": "base-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "deploy": "gh-pages -d dist",
+    "lint": "eslint . --quiet",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc -p ./jsconfig.json",
+    "preview": "vite preview"
+  }
+}
+>>>>>>> 6c034dc56efe1c8b3542e1e60cf5c1d4c4b022e2
