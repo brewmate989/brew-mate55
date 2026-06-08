@@ -24,7 +24,7 @@ function App() {
         <QueryClientProvider client={queryClientInstance}>
           <Router>
             <CartProvider>
-              <Routes>
+              <Routes basename="/brew-mate55/">
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
                 <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
