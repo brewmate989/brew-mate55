@@ -1,16 +1,16 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { fileURLToPath, URL } from "url";
+import path from "path";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/brew-mate55/",
+  base: "/brew-mate/",
   build: {
     outDir: "docs",
   },
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 });
