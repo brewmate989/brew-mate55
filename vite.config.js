@@ -4,9 +4,9 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/brew-mate/",   // sesuaikan dengan nama repo GitHub kamu
+  base: "/brew-mate.github.io/",  // ← ubah ini
   build: {
-    outDir: "docs",      // GitHub Pages bisa baca dari folder /docs
+    outDir: "root",
   },
   resolve: {
     alias: {
