@@ -19,7 +19,7 @@ node_modules
 # Build output
 dist
 dist-ssr
-docs
+
 
 # Vite cache
 .vite
