@@ -1,245 +1,110 @@
-<<<<<<< HEAD
-# Welcome to My Project
+# BrewMate ☕
 
-## About
-
-This project is built using React, Vite, Tailwind CSS, Express, and MySQL.
-
-The application can run fully on your local machine without Base44 integration.
-
----
-
-## Getting Started
-
-### Prerequisites
-
-Make sure you have installed:
-
-* Node.js
-* npm
-* XAMPP / MySQL
-
----
-
-## Installation
-
-Clone the repository:
-
-```bash
-git clone your-repository-url
-```
-
-Navigate to the project folder:
-
-```bash
-cd your-project-folder
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
----
-
-## Environment Setup
-
-Create a `.env.local` file if needed.
-
-Example:
-
-```env
-VITE_API_URL=http://localhost:3000
-```
-
----
-
-## Run Frontend
-
-```bash
-npm run dev
-```
-
-Frontend will run on:
-
-```txt
-http://localhost:5173
-```
-
----
-
-## Run Backend
-
-Start your Express server:
-
-```bash
-node server.js
-```
-
-Backend will run on:
-
-```txt
-http://localhost:3000
-```
-
----
-
-## Database Setup
-
-1. Open phpMyAdmin
-2. Create a database
-3. Import your SQL file if available
-4. Update database credentials inside `server.js`
-
-Example:
-
-```js
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "your_database_name"
-});
-```
+Aplikasi pemesanan kopi berbasis web — React + Vite + Tailwind + Express + MySQL.
 
 ---
 
 ## Tech Stack
 
-* React
-* Vite
-* Tailwind CSS
-* Express.js
-* MySQL
+| Layer     | Teknologi                        |
+|-----------|----------------------------------|
+| Frontend  | React 18, Vite, Tailwind CSS, shadcn/ui |
+| Backend   | Express.js (Node.js)             |
+| Database  | MySQL (via XAMPP)                |
+| Hosting   | GitHub Pages (frontend)          |
 
 ---
 
-## Notes
+## Cara Menjalankan Lokal
 
-This project has been converted from Base44 into a standalone local development project.
+### 1. Prasyarat
+- Node.js v18+
+- XAMPP (MySQL)
+- Git
 
-All Base44 dependencies and integrations have been removed.
-=======
-# Welcome to My Project
-
-## About
-
-This project is built using React, Vite, Tailwind CSS, Express, and MySQL.
-
-The application can run fully on your local machine without Base44 integration.
-
----
-
-## Getting Started
-
-### Prerequisites
-
-Make sure you have installed:
-
-* Node.js
-* npm
-* XAMPP / MySQL
-
----
-
-## Installation
-
-Clone the repository:
-
+### 2. Clone & Install
 ```bash
-git clone your-repository-url
-```
-
-Navigate to the project folder:
-
-```bash
-cd your-project-folder
-```
-
-Install dependencies:
-
-```bash
+git clone https://github.com/username/brew-mate.git
+cd brew-mate
 npm install
 ```
 
----
+### 3. Setup Environment
+```bash
+# Salin file contoh
+cp .env.example .env
 
-## Environment Setup
-
-Create a `.env.local` file if needed.
-
-Example:
-
-```env
-VITE_API_URL=http://localhost:3000
+# Edit .env sesuai konfigurasi lokal kamu
+# DB_HOST, DB_USER, DB_PASSWORD, DB_NAME
 ```
 
----
+### 4. Jalankan Database
+1. Buka XAMPP → Start Apache & MySQL
+2. Buka `http://localhost/phpmyadmin`
+3. Buat database baru bernama `brewmate`
+4. Tabel akan dibuat otomatis saat server pertama kali dijalankan
 
-## Run Frontend
-
+### 5. Jalankan Backend
 ```bash
+node server.cjs
+# Server berjalan di http://localhost:5000
+```
+
+### 6. Jalankan Frontend
+```bash
+# Terminal baru
 npm run dev
-```
-
-Frontend will run on:
-
-```txt
-http://localhost:5173
+# Frontend di http://localhost:5173
 ```
 
 ---
 
-## Run Backend
+## Deploy ke GitHub Pages (Frontend Only)
 
-Start your Express server:
-
-```bash
-node server.js
-```
-
-Backend will run on:
-
-```txt
-http://localhost:3000
-```
-
----
-
-## Database Setup
-
-1. Open phpMyAdmin
-2. Create a database
-3. Import your SQL file if available
-4. Update database credentials inside `server.js`
-
-Example:
-
+### Langkah 1 — Pastikan `vite.config.js` sudah benar
 ```js
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "your_database_name"
-});
+base: "/brew-mate/",   // nama repo GitHub kamu
+build: { outDir: "docs" }
+```
+
+### Langkah 2 — Build
+```bash
+npm run build
+# Output masuk ke folder /docs
+```
+
+### Langkah 3 — Push ke GitHub
+```bash
+git add .
+git commit -m "deploy: update build"
+git push
+```
+
+### Langkah 4 — Aktifkan GitHub Pages
+1. Buka repo di GitHub → **Settings → Pages**
+2. Source: **Deploy from branch**
+3. Branch: `main` / `master`
+4. Folder: `/docs`
+5. Save → tunggu beberapa menit
+
+### Langkah 5 — Akses
+```
+https://username.github.io/brew-mate/
 ```
 
 ---
 
-## Tech Stack
+## Catatan Penting
 
-* React
-* Vite
-* Tailwind CSS
-* Express.js
-* MySQL
+- File `.env` **tidak boleh** di-commit ke GitHub (sudah ada di `.gitignore`)
+- Backend (Express) tidak bisa di-hosting di GitHub Pages — perlu hosting terpisah (Railway, Render, dll)
+- Untuk demo GitHub Pages, frontend akan berjalan tanpa backend (data menggunakan state lokal)
 
 ---
 
-## Notes
+## Login Demo
 
-This project has been converted from Base44 into a standalone local development project.
-
-All Base44 dependencies and integrations have been removed.
->>>>>>> 6c034dc56efe1c8b3542e1e60cf5c1d4c4b022e2
+| Role  | Email                | Password  |
+|-------|----------------------|-----------|
+| Admin | admin@brewmate.id    | admin123  |
+| User  | daftar akun baru     | —         |
