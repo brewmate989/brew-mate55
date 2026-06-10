@@ -4,9 +4,9 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/brew-mate.github.io/",  // ← ubah ini
+  base: "/brew-mate/",
   build: {
-    outDir: "root",
+    outDir: "dist",
   },
   resolve: {
     alias: {
