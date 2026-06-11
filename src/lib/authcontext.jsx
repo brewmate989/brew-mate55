@@ -1,16 +1,32 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { supabase } from "./supabase";
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("brew_user");
-    return saved ? JSON.parse(saved) : null;
-  });
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (userData) => {
+  useEffect(() => {
+    const saved = localStorage.getItem("brew_user");
+    if (saved) setUser(JSON.parse(saved));
+    setLoading(false);
+  }, []);
+
+  const loginWithCredentials = async (email, password) => {
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .eq("password", password)
+      .single();
+
+    if (error || !data) return { success: false, error: "Email atau password salah." };
+
+    const userData = { id: data.id, name: data.name, email: data.email, role: data.role, picture: "" };
     setUser(userData);
     localStorage.setItem("brew_user", JSON.stringify(userData));
+    return { success: true };
   };
 
   const logout = () => {
@@ -19,14 +35,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, loginWithCredentials, logout }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within AuthProvider");
-  return context;
-};
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  return ctx;
+}
