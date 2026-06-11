@@ -4,7 +4,7 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/brew-mate/",
+  base: "/brew-mate55/",
   build: {
     outDir: "docs",
   },
