@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   base: "/brew-mate/",
   build: {
-    outDir: "dist",
+    outDir: "docs",
   },
   resolve: {
     alias: {
