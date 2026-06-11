@@ -1,32 +1,65 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { supabase } from "./supabase";
 
 const AuthContext = createContext(null);
+
+// Email yang dianggap admin
+const ADMIN_EMAILS = [
+  "matebrew0@gmail.com",
+  "admin@brewmate.com",
+];
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem("brew_user");
-    if (saved) setUser(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem("brew_user");
+      if (saved) setUser(JSON.parse(saved));
+    } catch {
+      localStorage.removeItem("brew_user");
+    }
     setLoading(false);
   }, []);
 
+  // Login manual (email + password)
   const loginWithCredentials = async (email, password) => {
-    const { data, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("email", email)
-      .eq("password", password)
-      .single();
+    const DEMO_USERS = [
+      { email: "admin@brewmate.com", password: "admin123", name: "Admin BrewMate", picture: "" },
+      { email: "user@brewmate.com",  password: "user123",  name: "User Demo",      picture: "" },
+    ];
 
-    if (error || !data) return { success: false, error: "Email atau password salah." };
+    const found = DEMO_USERS.find(
+      (u) => u.email === email && u.password === password
+    );
 
-    const userData = { id: data.id, name: data.name, email: data.email, role: data.role, picture: "" };
+    if (!found) return { success: false, error: "Email atau password salah." };
+
+    const userData = {
+      id:      found.email,
+      name:    found.name,
+      email:   found.email,
+      picture: found.picture,
+      role:    ADMIN_EMAILS.includes(found.email) ? "admin" : "user",
+    };
+
     setUser(userData);
     localStorage.setItem("brew_user", JSON.stringify(userData));
     return { success: true };
+  };
+
+  // Login Google (dipanggil setelah dapat profile dari Google)
+  const login = (profile) => {
+    const userData = {
+      id:      profile.email,
+      name:    profile.name,
+      email:   profile.email,
+      picture: profile.picture || "",
+      role:    ADMIN_EMAILS.includes(profile.email) ? "admin" : "user",
+    };
+
+    setUser(userData);
+    localStorage.setItem("brew_user", JSON.stringify(userData));
   };
 
   const logout = () => {
@@ -35,7 +68,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, loginWithCredentials, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, loginWithCredentials, logout }}>
       {children}
     </AuthContext.Provider>
   );
