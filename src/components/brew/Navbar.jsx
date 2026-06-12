@@ -4,11 +4,10 @@ import { Link } from "react-router-dom";
 import { ShoppingBag, Menu, X, History, LogOut, LayoutDashboard } from "lucide-react";
 import { useCart } from "@/lib/cartContext.jsx";
 import { useAuth } from "@/lib/authcontext";
-import LoginButton from "./LoginButton";
 
 export default function Navbar() {
   const { itemCount, setIsOpen } = useCart();
-  const { user, logout } = useAuth();
+  const { user, logout, login } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -49,7 +48,6 @@ export default function Navbar() {
             Riwayat
           </Link>
 
-          {/* Admin Link */}
           {isAdmin && (
             <Link to="/admin" className="flex items-center gap-1.5 text-sm font-medium text-orange-500 hover:text-orange-600">
               <LayoutDashboard className="h-4 w-4" />
@@ -72,7 +70,12 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <LoginButton />
+            <button
+              onClick={login}
+              className="text-sm font-medium text-gray-600 hover:text-black"
+            >
+              Login
+            </button>
           )}
 
           <button onClick={() => setIsOpen(true)} className="relative flex items-center gap-2 rounded-full bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90">
@@ -120,7 +123,6 @@ export default function Navbar() {
                 Riwayat
               </Link>
 
-              {/* Admin Link Mobile */}
               {isAdmin && (
                 <Link to="/admin" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm text-orange-500 font-medium hover:bg-orange-50">
                   <LayoutDashboard className="h-4 w-4" />
@@ -145,7 +147,12 @@ export default function Navbar() {
                   </div>
                 ) : (
                   <div className="px-4">
-                    <LoginButton />
+                    <button
+                      onClick={login}
+                      className="w-full rounded-xl px-4 py-3 text-left text-sm hover:bg-gray-100"
+                    >
+                      Login
+                    </button>
                   </div>
                 )}
               </div>
