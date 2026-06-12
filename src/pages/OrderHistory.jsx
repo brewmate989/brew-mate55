@@ -12,13 +12,10 @@ const STATUS_CONFIG = {
   cancelled: { label: "Dibatalkan", icon: XCircle, color: "text-red-600 bg-red-50" },
 };
 
-const ADMIN_EMAIL = "desv19738@gmail.com";
-
 export default function OrderHistory() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const isAdmin = user?.email === ADMIN_EMAIL;
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -32,7 +29,7 @@ export default function OrderHistory() {
       setLoading(false);
     };
     fetchOrders();
-  }, [user]);
+  }, [user, isAdmin]);
 
   if (loading) {
     return (
