@@ -4,7 +4,9 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    // sessionStorage = per tab, tidak dishare antar tab
+    // Hapus data lama dari localStorage sekali selamanya
+    localStorage.removeItem("brew_user");
+
     const saved = sessionStorage.getItem("brew_user");
     return saved ? JSON.parse(saved) : null;
   });
