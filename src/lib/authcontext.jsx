@@ -4,18 +4,19 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("brew_user");
+    // sessionStorage = per tab, tidak dishare antar tab
+    const saved = sessionStorage.getItem("brew_user");
     return saved ? JSON.parse(saved) : null;
   });
 
   const login = (userData) => {
     setUser(userData);
-    localStorage.setItem("brew_user", JSON.stringify(userData));
+    sessionStorage.setItem("brew_user", JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("brew_user");
+    sessionStorage.removeItem("brew_user");
   };
 
   const isAdmin = user?.role === "admin" || user?.email === "admin@brewmate.com";
