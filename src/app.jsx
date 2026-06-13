@@ -10,10 +10,18 @@ import Home from "@/pages/Home";
 import Checkout from "@/pages/Checkout";
 import OrderHistory from "@/pages/OrderHistory";
 import Login from "@/pages/Login";
+import Admin from "@/pages/Admin";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
+  return children;
+}
+
+function AdminRoute({ children }) {
+  const { user, isAdmin } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  if (!isAdmin) return <Navigate to="/" replace />;
   return children;
 }
 
@@ -29,6 +37,7 @@ function App() {
                 <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
                 <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
                 <Route path="/history" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
+                <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
                 <Route path="*" element={<PageNotFound />} />
               </Routes>
             </CartProvider>

@@ -7,11 +7,9 @@ import { useAuth } from "@/lib/authcontext";
 
 export default function Navbar() {
   const { itemCount, setIsOpen } = useCart();
-  const { user, logout, login } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const isAdmin = user?.email === "admin@brewmate.com";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -39,7 +37,6 @@ export default function Navbar() {
           </motion.span>
         </button>
 
-        {/* Desktop */}
         <div className="hidden items-center gap-6 md:flex">
           <button onClick={() => scrollTo("menu")} className="text-sm font-medium text-gray-600 hover:text-black">Menu</button>
           <button onClick={() => scrollTo("tentang")} className="text-sm font-medium text-gray-600 hover:text-black">Tentang Kami</button>
@@ -49,9 +46,9 @@ export default function Navbar() {
           </Link>
 
           {isAdmin && (
-            <Link to="/admin" className="flex items-center gap-1.5 text-sm font-medium text-orange-500 hover:text-orange-600">
+            <Link to="/admin" className="flex items-center gap-1.5 text-sm font-medium text-orange-600 hover:text-orange-800">
               <LayoutDashboard className="h-4 w-4" />
-              Admin
+              Dashboard
             </Link>
           )}
 
@@ -60,8 +57,8 @@ export default function Navbar() {
               {user.picture ? (
                 <img src={user.picture} alt={user.name} className="h-8 w-8 rounded-full border" />
               ) : (
-                <div className="h-8 w-8 rounded-full bg-orange-100 flex items-center justify-center">
-                  <span className="text-orange-600 font-bold text-sm">{user.name?.[0]?.toUpperCase()}</span>
+                <div className="h-8 w-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-bold">
+                  {user.name?.charAt(0)}
                 </div>
               )}
               <span className="text-sm font-medium text-gray-700">{user.name}</span>
@@ -69,14 +66,7 @@ export default function Navbar() {
                 <LogOut className="h-4 w-4" />
               </button>
             </div>
-          ) : (
-            <button
-              onClick={login}
-              className="text-sm font-medium text-gray-600 hover:text-black"
-            >
-              Login
-            </button>
-          )}
+          ) : null}
 
           <button onClick={() => setIsOpen(true)} className="relative flex items-center gap-2 rounded-full bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90">
             <ShoppingBag className="h-4 w-4" />
@@ -89,7 +79,6 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Mobile */}
         <div className="flex items-center gap-3 md:hidden">
           <button onClick={() => setIsOpen(true)} className="relative p-2">
             <ShoppingBag className="h-5 w-5" />
@@ -105,7 +94,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -122,40 +110,18 @@ export default function Navbar() {
                 <History className="h-4 w-4" />
                 Riwayat
               </Link>
-
               {isAdmin && (
-                <Link to="/admin" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm text-orange-500 font-medium hover:bg-orange-50">
+                <Link to="/admin" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm text-orange-600 hover:bg-orange-50">
                   <LayoutDashboard className="h-4 w-4" />
-                  Admin Dashboard
+                  Dashboard Admin
                 </Link>
               )}
-
-              <div className="pt-2">
-                {user ? (
-                  <div className="flex items-center justify-between px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      {user.picture ? (
-                        <img src={user.picture} alt={user.name} className="h-7 w-7 rounded-full" />
-                      ) : (
-                        <div className="h-7 w-7 rounded-full bg-orange-100 flex items-center justify-center">
-                          <span className="text-orange-600 font-bold text-xs">{user.name?.[0]?.toUpperCase()}</span>
-                        </div>
-                      )}
-                      <span className="text-sm">{user.name}</span>
-                    </div>
-                    <button onClick={logout} className="text-sm text-red-500">Logout</button>
-                  </div>
-                ) : (
-                  <div className="px-4">
-                    <button
-                      onClick={login}
-                      className="w-full rounded-xl px-4 py-3 text-left text-sm hover:bg-gray-100"
-                    >
-                      Login
-                    </button>
-                  </div>
-                )}
-              </div>
+              {user && (
+                <button onClick={logout} className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm text-red-500 hover:bg-red-50">
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </button>
+              )}
             </div>
           </motion.div>
         )}
