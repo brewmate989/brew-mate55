@@ -4,21 +4,22 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    // Hapus data lama dari localStorage sekali selamanya
-    localStorage.removeItem("brew_user");
-
-    const saved = sessionStorage.getItem("brew_user");
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem("brew_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
   });
 
   const login = (userData) => {
     setUser(userData);
-    sessionStorage.setItem("brew_user", JSON.stringify(userData));
+    localStorage.setItem("brew_user", JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    sessionStorage.removeItem("brew_user");
+    localStorage.removeItem("brew_user");
   };
 
   const isAdmin = user?.role === "admin" || user?.email === "admin@brewmate.com";
