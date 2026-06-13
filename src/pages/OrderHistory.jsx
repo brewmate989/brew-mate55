@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Clock, CheckCircle, XCircle, Package } from "lucide-react";
 import { orderStorage } from "@/lib/orderStorage";
 import { formatRupiah } from "@/lib/menuData";
-import { useAuth } from "@/lib/authcontext";
 
 const STATUS_CONFIG = {
   pending: { label: "Menunggu", icon: Clock, color: "text-yellow-600 bg-yellow-50" },
@@ -13,23 +12,15 @@ const STATUS_CONFIG = {
 };
 
 export default function OrderHistory() {
-  const { user, isAdmin } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      if (isAdmin) {
-        const data = await orderStorage.getOrders();
-        setOrders(data);
-      } else {
-        const data = await orderStorage.getOrdersByUser(user?.email || "guest");
-        setOrders(data);
-      }
+    orderStorage.getOrders().then((data) => {
+      setOrders(data);
       setLoading(false);
-    };
-    fetchOrders();
-  }, [user, isAdmin]);
+    });
+  }, []);
 
   if (loading) {
     return (
@@ -45,7 +36,7 @@ export default function OrderHistory() {
         <div className="text-center">
           <Package className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
           <h2 className="text-2xl font-semibold mb-2">Belum Ada Pesanan</h2>
-          <p className="text-muted-foreground mb-6">Riwayat pesanan akan muncul di sini</p>
+          <p className="text-muted-foreground mb-6">Riwayat pesanan kamu akan muncul di sini</p>
           <Link to="/" className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl">
             <ArrowLeft className="w-4 h-4" />
             Kembali ke Menu
@@ -62,14 +53,7 @@ export default function OrderHistory() {
           <Link to="/" className="p-2 rounded-full hover:bg-muted">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <div>
-            <h1 className="text-xl font-semibold">
-              {isAdmin ? "Semua Pesanan (Admin)" : "Riwayat Pesanan"}
-            </h1>
-            {isAdmin && (
-              <p className="text-xs text-muted-foreground">{orders.length} total pesanan</p>
-            )}
-          </div>
+          <h1 className="text-xl font-semibold">Riwayat Pesanan</h1>
         </div>
       </div>
 
@@ -85,9 +69,6 @@ export default function OrderHistory() {
                 <div>
                   <p className="font-semibold">{order.customer_name}</p>
                   <p className="text-sm text-muted-foreground">{order.phone}</p>
-                  {isAdmin && (
-                    <p className="text-xs text-blue-500 mt-0.5">{order.user_email}</p>
-                  )}
                   <p className="text-xs text-muted-foreground mt-1">
                     {new Date(order.created_at).toLocaleString("id-ID")}
                   </p>
@@ -99,7 +80,7 @@ export default function OrderHistory() {
               </div>
 
               <div className="space-y-1.5">
-                {(items || []).map((item, i) => (
+                {items.map((item, i) => (
                   <div key={i} className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{item.quantity}x {item.name}</span>
                     <span>{formatRupiah(item.price * item.quantity)}</span>
