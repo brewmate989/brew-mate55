@@ -1,76 +1,40 @@
-import { supabase } from "@/lib/supabase";
+const API_URL = "http://localhost:5000/api";
 
 export const orderStorage = {
   async getOrders() {
-    try {
-      const { data, error } = await supabase
-        .from("orders")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error("Gagal ambil orders:", error);
-      return [];
-    }
+    const res = await fetch(`${API_URL}/orders`);
+    return await res.json();
   },
 
-  async getOrdersByUser(userEmail) {
-    try {
-      const { data, error } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("user_email", userEmail)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error("Gagal ambil orders user:", error);
-      return [];
-    }
+  async createOrder(order) {
+    const res = await fetch(`${API_URL}/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(order),
+    });
+
+    return await res.json();
   },
 
-  async createOrder(orderData) {
-    try {
-      const id = "order_" + Date.now();
-      const { data, error } = await supabase
-        .from("orders")
-        .insert([{ id, ...orderData }])
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      console.error("Gagal buat order:", error);
-      throw error;
-    }
+  async updateStatus(id, status) {
+    const res = await fetch(`${API_URL}/orders/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status }),
+    });
+
+    return await res.json();
   },
 
-  async updateOrderStatus(orderId, status) {
-    try {
-      const { error } = await supabase
-        .from("orders")
-        .update({ status })
-        .eq("id", orderId);
-      if (error) throw error;
-      return true;
-    } catch (error) {
-      console.error("Gagal update status:", error);
-      return false;
-    }
-  },
+  async deleteOrder(id) {
+    const res = await fetch(`${API_URL}/orders/${id}`, {
+      method: "DELETE",
+    });
 
-  async deleteOrder(orderId) {
-    try {
-      const { error } = await supabase
-        .from("orders")
-        .delete()
-        .eq("id", orderId);
-      if (error) throw error;
-      return true;
-    } catch (error) {
-      console.error("Gagal hapus order:", error);
-      return false;
-    }
+    return await res.json();
   },
 };

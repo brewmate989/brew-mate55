@@ -1,11 +1,12 @@
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClientInstance } from "@/lib/query-client";
-import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import PageNotFound from "./lib/PageNotFound";
 import { CartProvider } from "@/lib/cartContext";
 import { AuthProvider, useAuth } from "@/lib/authcontext";
+
 import LoginPage from "@/pages/LoginPage";
 import Home from "@/pages/Home";
 import Checkout from "@/pages/Checkout";
@@ -15,10 +16,17 @@ import Admin from "@/pages/Admin";
 function AppRoutes() {
   const { user } = useAuth();
 
+  // ===== PUBLIC ROUTES =====
   if (!user) {
-    return <LoginPage />;
+    return (
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    );
   }
 
+  // ===== PROTECTED ROUTES =====
   return (
     <CartProvider>
       <Routes>
@@ -26,6 +34,10 @@ function AppRoutes() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/history" element={<OrderHistory />} />
         <Route path="/admin" element={<Admin />} />
+
+        {/* kalau sudah login, tidak boleh ke login */}
+        <Route path="/login" element={<Navigate to="/" replace />} />
+
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </CartProvider>

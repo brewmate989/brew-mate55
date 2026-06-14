@@ -90,7 +90,7 @@ export default function OrderHistory() {
 
               <div className="border-t pt-3 flex justify-between items-center">
                 <div className="text-sm text-muted-foreground space-y-0.5">
-                  <p>{order.order_type === "dine_in" ? `Dine In • Meja ${order.table_number}` : "Takeaway"}</p>
+                  <p>{order.order_type === "dine_in" ? `Dine In ï¿½ Meja ${order.table_number}` : "Takeaway"}</p>
                   <p>Bayar via <span className="font-medium text-foreground">{order.payment_method}</span></p>
                 </div>
                 <span className="font-bold">{formatRupiah(order.total)}</span>
