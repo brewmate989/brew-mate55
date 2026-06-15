@@ -66,7 +66,6 @@ db.connect((err) => {
     if (err) console.error("❌ Gagal buat tabel users:", err.message);
     else {
       console.log("✅ Tabel users siap!");
-      // Buat akun admin default jika belum ada
       const adminEmail = "admin@brewmate.com";
       db.query("SELECT id FROM users WHERE email = ?", [adminEmail], async (err, rows) => {
         if (!err && rows.length === 0) {
@@ -95,19 +94,16 @@ app.get("/api/health", (req, res) => {
 app.post("/api/auth/register", async (req, res) => {
   const { name, email, password } = req.body;
 
-  if (!name || !email || !password) {
+  if (!name || !email || !password)
     return res.status(400).json({ error: "Semua field wajib diisi" });
-  }
 
-  if (password.length < 6) {
+  if (password.length < 6)
     return res.status(400).json({ error: "Password minimal 6 karakter" });
-  }
 
   db.query("SELECT id FROM users WHERE email = ?", [email], async (err, rows) => {
     if (err) return res.status(500).json({ error: "Server error" });
-    if (rows.length > 0) {
+    if (rows.length > 0)
       return res.status(409).json({ error: "Email sudah terdaftar" });
-    }
 
     try {
       const hash = await bcrypt.hash(password, 10);
@@ -132,27 +128,23 @@ app.post("/api/auth/register", async (req, res) => {
 app.post("/api/auth/login", async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
+  if (!email || !password)
     return res.status(400).json({ error: "Email dan password wajib diisi" });
-  }
 
   db.query("SELECT * FROM users WHERE email = ?", [email], async (err, rows) => {
     if (err) return res.status(500).json({ error: "Server error" });
-    if (rows.length === 0) {
+    if (rows.length === 0)
       return res.status(401).json({ error: "Email atau password salah" });
-    }
 
     const user = rows[0];
 
-    if (user.provider === "google") {
+    if (user.provider === "google")
       return res.status(401).json({ error: "Akun ini terdaftar via Google, silakan login dengan Google" });
-    }
 
     try {
       const match = await bcrypt.compare(password, user.password);
-      if (!match) {
+      if (!match)
         return res.status(401).json({ error: "Email atau password salah" });
-      }
 
       res.json({
         user: {
@@ -169,19 +161,17 @@ app.post("/api/auth/login", async (req, res) => {
   });
 });
 
-// Google Login (verifikasi token dari frontend)
+// Google Login
 app.post("/api/auth/google", (req, res) => {
   const { name, email, picture } = req.body;
 
-  if (!email) {
+  if (!email)
     return res.status(400).json({ error: "Data tidak valid" });
-  }
 
   db.query("SELECT * FROM users WHERE email = ?", [email], (err, rows) => {
     if (err) return res.status(500).json({ error: "Server error" });
 
     if (rows.length > 0) {
-      // User sudah ada, return data
       const user = rows[0];
       return res.json({
         user: {
@@ -194,7 +184,6 @@ app.post("/api/auth/google", (req, res) => {
       });
     }
 
-    // User baru via Google, simpan ke DB
     db.query(
       "INSERT INTO users (name, email, picture, provider, password) VALUES (?, ?, ?, 'google', '')",
       [name, email, picture || ""],
@@ -225,9 +214,9 @@ app.get("/api/orders", (req, res) => {
 
 app.post("/api/orders", (req, res) => {
   const order = req.body;
-  if (!order.customer_name || !order.items || !order.total) {
+  if (!order.customer_name || !order.items || !order.total)
     return res.status(400).json({ error: "Data tidak lengkap" });
-  }
+
   const id = "order_" + Date.now();
   db.query(
     `INSERT INTO orders
@@ -246,9 +235,9 @@ app.post("/api/orders", (req, res) => {
 app.put("/api/orders/:id", (req, res) => {
   const { status } = req.body;
   const validStatus = ["pending", "Diproses", "Siap", "Selesai", "Dibatalkan"];
-  if (!validStatus.includes(status)) {
+  if (!validStatus.includes(status))
     return res.status(400).json({ error: "Status tidak valid" });
-  }
+
   db.query("UPDATE orders SET status = ? WHERE id = ?",
     [status, req.params.id],
     (err) => {
