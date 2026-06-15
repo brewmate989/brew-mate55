@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Akun demo hardcoded
 const DEMO_ACCOUNTS = [
   { email: "admin@brewmate.com", password: "admin123", role: "admin", name: "Admin BrewMate" },
   { email: "user@brewmate.com",  password: "user123",  role: "user",  name: "User BrewMate" },
@@ -16,27 +15,27 @@ export default function LoginPage() {
   const handleLogin = async () => {
     setLoading(true);
 
-    // Coba koneksi ke backend dulu
     try {
       const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
       const res = await fetch(`${API}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-        signal: AbortSignal.timeout(3000), // timeout 3 detik
+        signal: AbortSignal.timeout(3000),
       });
 
       if (res.ok) {
         const data = await res.json();
-        localStorage.setItem("user", JSON.stringify(data.user));
-        navigate(data.user.role === "admin" ? "/admin" : "/");
+        // ✅ Pakai key brew_user sesuai authcontext
+        localStorage.setItem("brew_user", JSON.stringify(data.user));
+        window.location.href = data.user.role === "admin" ? "/#/admin" : "/#/";
         return;
       }
     } catch {
       // Backend tidak tersedia, pakai mode demo
     }
 
-    // Mode demo — cek akun hardcoded
+    // Mode demo
     const found = DEMO_ACCOUNTS.find(
       (a) => a.email === email && a.password === password
     );
@@ -48,9 +47,9 @@ export default function LoginPage() {
     }
 
     const user = { id: found.role === "admin" ? 1 : 2, name: found.name, email: found.email, role: found.role, picture: "" };
-    localStorage.setItem("user", JSON.stringify(user));
-    navigate(found.role === "admin" ? "/admin" : "/");
-    setLoading(false);
+    // ✅ Pakai key brew_user sesuai authcontext
+    localStorage.setItem("brew_user", JSON.stringify(user));
+    window.location.href = found.role === "admin" ? "/#/admin" : "/#/";
   };
 
   const loginAs = (type) => {
@@ -93,7 +92,6 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {/* Tombol demo cepat */}
         <div className="mt-6 border-t pt-4">
           <p className="text-xs text-gray-400 text-center mb-3">Akun Demo</p>
           <div className="grid grid-cols-2 gap-2">
