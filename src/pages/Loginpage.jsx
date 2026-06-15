@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/lib/authcontext";
 
 const DEMO_ACCOUNTS = [
   { email: "admin@brewmate.com", password: "admin123", role: "admin", name: "Admin BrewMate" },
@@ -7,12 +7,14 @@ const DEMO_ACCOUNTS = [
 ];
 
 export default function LoginPage() {
-  const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    setError("");
     setLoading(true);
 
     try {
@@ -26,36 +28,38 @@ export default function LoginPage() {
 
       if (res.ok) {
         const data = await res.json();
-        // ✅ Pakai key brew_user sesuai authcontext
-        localStorage.setItem("brew_user", JSON.stringify(data.user));
-        window.location.href = data.user.role === "admin" ? "/#/admin" : "/#/";
+        login(data.user); // pakai AuthContext, bukan window.location
         return;
       }
     } catch {
       // Backend tidak tersedia, pakai mode demo
     }
 
-    // Mode demo
+    // Mode demo / fallback
     const found = DEMO_ACCOUNTS.find(
       (a) => a.email === email && a.password === password
     );
 
     if (!found) {
-      alert("Email atau password salah");
+      setError("Email atau password salah");
       setLoading(false);
       return;
     }
 
-    const user = { id: found.role === "admin" ? 1 : 2, name: found.name, email: found.email, role: found.role, picture: "" };
-    // ✅ Pakai key brew_user sesuai authcontext
-    localStorage.setItem("brew_user", JSON.stringify(user));
-    window.location.href = found.role === "admin" ? "/#/admin" : "/#/";
+    login({
+      id: found.role === "admin" ? 1 : 2,
+      name: found.name,
+      email: found.email,
+      role: found.role,
+      picture: "",
+    });
   };
 
   const loginAs = (type) => {
     const acc = DEMO_ACCOUNTS.find(a => a.role === type);
     setEmail(acc.email);
     setPassword(acc.password);
+    setError("");
   };
 
   return (
@@ -83,6 +87,11 @@ export default function LoginPage() {
             onKeyDown={(e) => e.key === "Enter" && handleLogin()}
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
           />
+
+          {error && (
+            <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+          )}
+
           <button
             onClick={handleLogin}
             disabled={loading}
