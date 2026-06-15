@@ -1,0 +1,81 @@
+{
+  "name": "Order",
+  "type": "object",
+  "properties": {
+    "customer_name": {
+      "type": "string",
+      "description": "Nama pelanggan"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Nomor telepon pelanggan"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Catatan tambahan untuk pesanan"
+    },
+    "items": {
+      "type": "array",
+      "description": "Daftar item yang dipesan",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nama item"
+          },
+          "price": {
+            "type": "number",
+            "description": "Harga item"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Jumlah item"
+          },
+          "category": {
+            "type": "string",
+            "description": "Kategori item"
+          }
+        },
+        "required": [
+          "name",
+          "price",
+          "quantity"
+        ]
+      }
+    },
+    "total": {
+      "type": "number",
+      "description": "Total harga pesanan"
+    },
+    "status": {
+      "type": "string",
+      "description": "Status pesanan",
+      "enum": [
+        "pending",
+        "processing",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "order_type": {
+      "type": "string",
+      "description": "Tipe pesanan",
+      "enum": [
+        "dine_in",
+        "takeaway"
+      ],
+      "default": "dine_in"
+    },
+    "table_number": {
+      "type": "string",
+      "description": "Nomor meja (jika dine-in)"
+    }
+  },
+  "required": [
+    "customer_name",
+    "items",
+    "total"
+  ]
+}
